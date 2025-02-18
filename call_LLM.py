@@ -1,15 +1,20 @@
-from utils import *
+import os
+from dotenv import load_dotenv
 from openai import OpenAI
 import google.generativeai as genai
 import transformers
 import torch
 import time
 
+load_dotenv()
+
 # DeepSeek-R1-Distill-Llama-70B -> free and working!
 def DeepSeek_R1_Distill_Llama_70B(comment):
+    print("DeepSeek: R1 Distill Llama 70B")
+
     clinet = OpenAI(
         base_url = "https://openrouter.ai/api/v1",
-        api_key = load_api_key("openrouter"),
+        api_key = os.getenv("OPENROUTER_API_KEY"),
     )
 
     completion = clinet.chat.completions.create(
@@ -24,9 +29,11 @@ def DeepSeek_R1_Distill_Llama_70B(comment):
 
 # DeepSeek: R1 Distill Qwen 32B
 def DeepSeek_R1(comment):
+    print("DeepSeek: R1")
+
     clinet = OpenAI(
         base_url = "https://openrouter.ai/api/v1",
-        api_key = load_api_key("openrouter"),
+        api_key = os.getenv("OPENROUTER_API_KEY"),
     )
 
     completion = clinet.chat.completions.create(
@@ -41,6 +48,7 @@ def DeepSeek_R1(comment):
 
 # Llama -> model too big
 def Llama(comment):
+    print("meta-llama: Llama-3.3-70B-Instruct")
     model_id = "meta-llama/Llama-3.3-70B-Instruct"
 
     pipeline = transformers.pipeline(
@@ -62,14 +70,16 @@ def Llama(comment):
     print(outputs[0]["generated_text"][-1])
 
 # Gemini -> free and working!
-def Gemini(comment):
-    GEMINI_API_KEY = load_api_key("gemini")
-    client = genai.Client(api_key=GEMINI_API_KEY)
-
-    response = client.models.generate_content(
-        model = "gemini-2.0-flash",
-        contents = comment,
-    )
+def Gemini(comment, model = "gemini-2.0-flash"):
+    print("Gemini: {}".format(model))
+    
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    # 設定 API Key
+    genai.configure(api_key=GEMINI_API_KEY)
+    # 指定模型
+    model = genai.GenerativeModel(model)  # 確保模型名稱正確
+    # 生成回應
+    response = model.generate_content(comment)
 
     print(response.text)
 
@@ -81,9 +91,14 @@ if __name__ == "__main__":
     print("Start testing...")
     start_time = time.time()
 
-    # DeepSeek_R1(comment)
+    # major models
     DeepSeek_R1_Distill_Llama_70B(comment)
+
+    # minor models
     # Gemini(comment)
+
+    # backup models
+    # DeepSeek_R1(comment)
     # Llama()
 
     end_time = time.time()

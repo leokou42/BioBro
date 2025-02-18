@@ -1,3 +1,5 @@
-api_keys.json
 .venv
 __pycache__
+.env
+dump
+try.ipynb
