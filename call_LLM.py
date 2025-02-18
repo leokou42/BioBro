@@ -72,7 +72,7 @@ def Llama(comment):
 # Gemini -> free and working!
 def Gemini(comment, model = "gemini-2.0-flash"):
     print("Gemini: {}".format(model))
-    
+
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     # 設定 API Key
     genai.configure(api_key=GEMINI_API_KEY)
@@ -99,7 +99,6 @@ if __name__ == "__main__":
 
     # backup models
     # DeepSeek_R1(comment)
-    # Llama()
 
     end_time = time.time()
     print(f"Time elapsed: {end_time - start_time:.2f} seconds.")
