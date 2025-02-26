@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from src.utils.model import llm_model
-from src.chains.answerChain import answerChain  # ✅ 只保留 answerChain
+from src.chains.answerChain import answerChain  # 只保留 answerChain
 
 # 載入環境變數
 load_dotenv()
@@ -15,7 +15,7 @@ try:
     llm = llm_model("gemini")
 except ValueError as e:
     llm = None
-    print(f"⚠️ LLM 初始化失敗: {e}")
+    print(f"LLM 初始化失敗: {e}")
 
 # 定義請求格式
 class QueryRequest(BaseModel):
@@ -41,7 +41,7 @@ def ask_biobro(request: QueryRequest):
         raise HTTPException(status_code=400, detail="問題不能為空")
 
     try:
-        # ✅ 直接使用 answerChain 產生回答
+        # 直接使用 answerChain 產生回答
         answerchain = answerChain(model="gemini")
         answer = answerchain.invoke({"question": request.query, "context": ""})  # 目前沒有 context
 
